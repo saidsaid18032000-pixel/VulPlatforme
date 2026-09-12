@@ -24,7 +24,7 @@ spring:
         - id: auth-service
           uri: http://${AUTH_SERVICE_HOST:auth-service}:8081
           predicates:
-            - Path=/api/auth/**,/api/users/**,/api/roles/**
+            - Path=/api/auth/**,/api/users/**,/api/roles/**,/api/audit-logs/**,/api/dashboard/**
         - id: asset-service
           uri: http://${ASSET_SERVICE_HOST:asset-service}:8082
           predicates:

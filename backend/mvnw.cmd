@@ -1,7 +1,8 @@
 @echo off
 setlocal
 set MAVEN_PROJECTBASEDIR=%~dp0
-set WRAPPER_JAR=%MAVEN_PROJECTBASEDIR%.mvn\wrapper\maven-wrapper.jar
+if "%MAVEN_PROJECTBASEDIR:~-1%"=="\" set MAVEN_PROJECTBASEDIR=%MAVEN_PROJECTBASEDIR:~0,-1%
+set WRAPPER_JAR=%MAVEN_PROJECTBASEDIR%\.mvn\wrapper\maven-wrapper.jar
 if not exist "%WRAPPER_JAR%" (
   echo Missing maven-wrapper.jar
   exit /b 1
