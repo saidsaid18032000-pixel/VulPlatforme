@@ -10,16 +10,13 @@ spring:
     password: ${POSTGRES_PASSWORD:vuln_secret_change_me}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     open-in-view: false
+    show-sql: false
     properties:
       hibernate:
         jdbc:
           time_zone: UTC
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
 management:
   endpoints:
@@ -35,7 +32,6 @@ springdoc:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:change_me_to_a_long_random_secret_at_least_32_chars}
+    secret: ${JWT_SECRET:change_me_to_a_long_random_secret_at_least_32_chars_very_secure}
     expiration-ms: ${JWT_EXPIRATION_MS:900000}
     refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}
-
