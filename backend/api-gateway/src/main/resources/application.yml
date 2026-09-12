@@ -1,0 +1,57 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth-service
+          uri: http://${AUTH_SERVICE_HOST:auth-service}:8081
+          predicates:
+            - Path=/api/auth/**,/api/users/**,/api/roles/**
+        - id: asset-service
+          uri: http://${ASSET_SERVICE_HOST:asset-service}:8082
+          predicates:
+            - Path=/api/assets/**
+        - id: scan-service
+          uri: http://${SCAN_SERVICE_HOST:scan-service}:8083
+          predicates:
+            - Path=/api/scans/**
+        - id: vulnerability-service
+          uri: http://${VULN_SERVICE_HOST:vulnerability-service}:8084
+          predicates:
+            - Path=/api/vulnerabilities/**
+        - id: alert-service
+          uri: http://${ALERT_SERVICE_HOST:alert-service}:8085
+          predicates:
+            - Path=/api/alerts/**
+        - id: report-service
+          uri: http://${REPORT_SERVICE_HOST:report-service}:8086
+          predicates:
+            - Path=/api/reports/**
+        - id: ai-service
+          uri: http://${AI_SERVICE_HOST:ai-service}:8000
+          predicates:
+            - Path=/api/ai/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

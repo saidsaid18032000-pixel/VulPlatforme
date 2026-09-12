@@ -1,0 +1,36 @@
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+*.pem
+*.key
+
+# Java / Maven
+**/target/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# Node / Angular
+**/node_modules/
+**/dist/
+**/.angular/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+**/__pycache__/
+**/.venv/
+**/venv/
+**/*.pyc
+**/.pytest_cache/
+**/.mypy_cache/
+
+# Docker / logs / local tools
+*.log
+docker-data/
+tools/
+*.zip

@@ -1,0 +1,207 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vuln-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infra/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-vuln} -d ${POSTGRES_DB:-vulnplatform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: vuln-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: vuln-elasticsearch
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    ports:
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200 >/dev/null || exit 1"]
+      interval: 20s
+      timeout: 10s
+      retries: 10
+
+  auth-service:
+    build:
+      context: ./backend
+      dockerfile: auth-service/Dockerfile
+    container_name: vuln-auth
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+      JWT_SECRET: ${JWT_SECRET:-change_me_to_a_long_random_secret_at_least_32_chars}
+    ports:
+      - "${AUTH_SERVICE_PORT:-8081}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  asset-service:
+    build:
+      context: ./backend
+      dockerfile: asset-service/Dockerfile
+    container_name: vuln-asset
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+    ports:
+      - "${ASSET_SERVICE_PORT:-8082}:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  scan-service:
+    build:
+      context: ./backend
+      dockerfile: scan-service/Dockerfile
+    container_name: vuln-scan
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+    ports:
+      - "${SCAN_SERVICE_PORT:-8083}:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  vulnerability-service:
+    build:
+      context: ./backend
+      dockerfile: vulnerability-service/Dockerfile
+    container_name: vuln-vulnerability
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+    ports:
+      - "${VULN_SERVICE_PORT:-8084}:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  alert-service:
+    build:
+      context: ./backend
+      dockerfile: alert-service/Dockerfile
+    container_name: vuln-alert
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
+      POSTGRES_USER: ${POSTGRES_USER:-vuln}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+    ports:
+      - "${ALERT_SERVICE_PORT:-8085}:8085"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  report-service:
+    build:
+      context: ./backend
+      dockerfile: report-service/Dockerfile
+    container_name: vuln-report
+    restart: unless-stopped
+    ports:
+      - "${REPORT_SERVICE_PORT:-8086}:8086"
+
+  ai-service:
+    build:
+      context: ./ai-service
+    container_name: vuln-ai
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: redis
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    ports:
+      - "${AI_SERVICE_PORT:-8000}:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+
+  api-gateway:
+    build:
+      context: ./backend
+      dockerfile: api-gateway/Dockerfile
+    container_name: vuln-gateway
+    restart: unless-stopped
+    environment:
+      AUTH_SERVICE_HOST: auth-service
+      ASSET_SERVICE_HOST: asset-service
+      SCAN_SERVICE_HOST: scan-service
+      VULN_SERVICE_HOST: vulnerability-service
+      ALERT_SERVICE_HOST: alert-service
+      REPORT_SERVICE_HOST: report-service
+      AI_SERVICE_HOST: ai-service
+    ports:
+      - "${API_GATEWAY_PORT:-8080}:8080"
+    depends_on:
+      - auth-service
+      - asset-service
+      - scan-service
+      - vulnerability-service
+      - alert-service
+      - report-service
+      - ai-service
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: vuln-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-4200}:80"
+    depends_on:
+      - api-gateway
+
+volumes:
+  postgres_data:
+  redis_data:
+  es_data:
