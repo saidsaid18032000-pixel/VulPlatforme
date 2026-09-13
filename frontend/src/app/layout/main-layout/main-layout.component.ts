@@ -54,6 +54,16 @@ import { AuthService } from '../../core/services/auth.service';
                 <span>Tableau de bord</span>
               </a>
 
+              <a routerLink="/assets" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">dns</span>
+                <span>Actifs & Cartographie</span>
+              </a>
+
+              <a routerLink="/scans" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">radar</span>
+                <span>Moteur de Scans</span>
+              </a>
+
               @if (canManageUsers()) {
                 <a routerLink="/users" routerLinkActive="active" class="nav-item">
                   <span class="material-icons">manage_accounts</span>
@@ -80,8 +90,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 1</span>
-              <p>Authentification JWT & RBAC Dashboard actif</p>
+              <span class="sprint-tag">Sprint 2</span>
+              <p>Actifs & Moteur de Scans actif</p>
             </div>
           </div>
         </aside>

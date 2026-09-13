@@ -10,16 +10,14 @@ spring:
     password: ${POSTGRES_PASSWORD:vuln_secret_change_me}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     open-in-view: false
+    show-sql: false
     properties:
       hibernate:
         jdbc:
           time_zone: UTC
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:

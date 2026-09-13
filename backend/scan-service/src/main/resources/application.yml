@@ -10,16 +10,21 @@ spring:
     password: ${POSTGRES_PASSWORD:vuln_secret_change_me}
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     open-in-view: false
+    show-sql: false
     properties:
       hibernate:
         jdbc:
           time_zone: UTC
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  task:
+    execution:
+      pool:
+        core-size: 4
+        max-size: 8
+        queue-capacity: 100
+        thread-name-prefix: scan-exec-
 
 management:
   endpoints:
@@ -32,4 +37,3 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
-
