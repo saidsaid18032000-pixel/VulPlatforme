@@ -74,6 +74,11 @@ import { AuthService } from '../../core/services/auth.service';
                 <span>Centre d'Alertes</span>
               </a>
 
+              <a routerLink="/reports" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">assessment</span>
+                <span>Rapports & Exports</span>
+              </a>
+
               @if (canManageUsers()) {
                 <a routerLink="/users" routerLinkActive="active" class="nav-item">
                   <span class="material-icons">manage_accounts</span>
@@ -100,8 +105,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 3</span>
-              <p>Vulnérabilités & Alertes SOC</p>
+              <span class="sprint-tag">Sprint 4</span>
+              <p>Rapports & Exports SSI</p>
             </div>
           </div>
         </aside>

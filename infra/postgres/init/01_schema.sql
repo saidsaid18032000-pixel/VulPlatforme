@@ -123,6 +123,22 @@ CREATE TABLE IF NOT EXISTS alerts (
 CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
 CREATE INDEX IF NOT EXISTS idx_alerts_severity ON alerts(severity);
 
+-- Rapports (Sprint 4)
+CREATE TABLE IF NOT EXISTS reports (
+    id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title         VARCHAR(255) NOT NULL,
+    report_type   VARCHAR(50) NOT NULL,
+    status        VARCHAR(30) NOT NULL DEFAULT 'READY',
+    period_start  TIMESTAMPTZ,
+    period_end    TIMESTAMPTZ,
+    summary_json  TEXT,
+    created_by    UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_reports_type ON reports(report_type);
+CREATE INDEX IF NOT EXISTS idx_reports_created_at ON reports(created_at);
+
 -- Données de démarrage (rôles Sprint 1)
 INSERT INTO roles (name, description) VALUES
     ('ADMINISTRATEUR', 'Administrateur de la plateforme'),
