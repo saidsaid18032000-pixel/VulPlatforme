@@ -7,6 +7,7 @@ import com.vulnplatform.alert.entity.Alert;
 import com.vulnplatform.alert.entity.AlertSeverity;
 import com.vulnplatform.alert.entity.AlertStatus;
 import com.vulnplatform.alert.repository.AlertRepository;
+import com.vulnplatform.alert.service.AlertNotificationService;
 import com.vulnplatform.alert.service.AlertService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,9 @@ class AlertServiceTest {
 
     @Mock
     private JdbcTemplate jdbcTemplate;
+
+    @Mock
+    private AlertNotificationService notificationService;
 
     @InjectMocks
     private AlertService alertService;

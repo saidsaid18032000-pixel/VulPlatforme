@@ -23,12 +23,19 @@ Architecture **microservices** orientée domaine sécurité / vulnérabilités.
 - **Elasticsearch** : indexation / recherche full-text des vulnérabilités (Sprint 6)
 - Auth centralisée JWT au **API Gateway** (Sprint 6) + auth-service (Sprint 1)
 
-## Principes
+## État des sprints
 
-1. Un domaine métier = un service déployable
-2. Accès externe uniquement via l'API Gateway
-3. Auth centralisée (JWT) — implémentation métier au Sprint 1
-4. Conteneurisation homogène (Dockerfile par service + Compose)
+| Sprint | Contenu | Statut |
+|--------|---------|--------|
+| 0 | Socle Docker / microservices | Fait |
+| 1 | Auth JWT / RBAC / Dashboard | Fait |
+| 2 | Actifs & scans | Fait |
+| 3 | Vulnérabilités & alertes | Fait |
+| 4 | Rapports PDF | Fait |
+| 5 | Assistant IA (priorisation) | Fait |
+| 6 | JWT Gateway + recherche ES/Redis | Fait |
+| 7 | Polish SOC (KPI, scan→ES/alertes, webhooks, CI) | Fait |
+
 
 ## Communication
 

@@ -40,11 +40,11 @@ SELECT
   a.name AS asset_name,
   a.criticality AS asset_criticality,
   a.asset_type AS asset_type,
-  EXISTS (
-    SELECT 1 FROM alerts al
-    WHERE al.vulnerability_id = v.id
-      AND al.status IN ('NEW', 'ACKNOWLEDGED', 'IN_PROGRESS')
-  ) AS has_open_alert
+          EXISTS (
+            SELECT 1 FROM alerts al
+            WHERE al.vulnerability_id = v.id
+              AND al.status IN ('NEW', 'ACKNOWLEDGED')
+          ) AS has_open_alert
 FROM vulnerabilities v
 LEFT JOIN assets a ON a.id = v.asset_id
 WHERE v.status IN ('OPEN', 'IN_PROGRESS')
@@ -65,11 +65,11 @@ def load_vulnerability(vuln_id: str) -> dict[str, Any] | None:
           v.status, v.asset_id, v.discovered_at,
           a.name AS asset_name, a.criticality AS asset_criticality,
           a.asset_type AS asset_type,
-          EXISTS (
-            SELECT 1 FROM alerts al
-            WHERE al.vulnerability_id = v.id
-              AND al.status IN ('NEW', 'ACKNOWLEDGED', 'IN_PROGRESS')
-          ) AS has_open_alert
+              EXISTS (
+                SELECT 1 FROM alerts al
+                WHERE al.vulnerability_id = v.id
+                  AND al.status IN ('NEW', 'ACKNOWLEDGED')
+              ) AS has_open_alert
         FROM vulnerabilities v
         LEFT JOIN assets a ON a.id = v.asset_id
         WHERE v.id = %s::uuid

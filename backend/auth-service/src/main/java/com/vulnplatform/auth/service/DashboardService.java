@@ -59,13 +59,15 @@ public class DashboardService {
 
         // 4. Vulnerabilities counts & distributions
         stats.setVulnerabilitiesCount(queryCount("SELECT COUNT(*) FROM vulnerabilities"));
-        stats.setCriticalAlertsCount(queryCount("SELECT COUNT(*) FROM vulnerabilities WHERE severity = 'CRITICAL' AND status = 'OPEN'"));
+        stats.setCriticalAlertsCount(queryCount(
+                "SELECT COUNT(*) FROM alerts WHERE severity = 'CRITICAL' AND status IN ('NEW', 'ACKNOWLEDGED')"));
 
         Map<String, Long> vulnBySeverity = new HashMap<>();
         vulnBySeverity.put("CRITICAL", 0L);
         vulnBySeverity.put("HIGH", 0L);
         vulnBySeverity.put("MEDIUM", 0L);
         vulnBySeverity.put("LOW", 0L);
+        vulnBySeverity.put("INFO", 0L);
 
         try {
             jdbcTemplate.query(

@@ -37,3 +37,9 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+app:
+  vulnerability-service:
+    url: ${VULNERABILITY_SERVICE_URL:http://vulnerability-service:8084}
+  alert-service:
+    url: ${ALERT_SERVICE_URL:http://alert-service:8085}

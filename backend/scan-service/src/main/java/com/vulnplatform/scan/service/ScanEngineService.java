@@ -5,10 +5,11 @@ import com.vulnplatform.scan.entity.ScanStatus;
 import com.vulnplatform.scan.repository.ScanRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.util.*;
@@ -21,13 +22,24 @@ public class ScanEngineService {
 
     private final ScanRepository scanRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final RestTemplate restTemplate;
+    private final String vulnerabilityServiceUrl;
+    private final String alertServiceUrl;
 
     // Active cancellation flags
     private final Set<UUID> cancelledScans = ConcurrentHashMap.newKeySet();
 
-    public ScanEngineService(ScanRepository scanRepository, JdbcTemplate jdbcTemplate) {
+    public ScanEngineService(
+            ScanRepository scanRepository,
+            JdbcTemplate jdbcTemplate,
+            RestTemplate restTemplate,
+            @Value("${app.vulnerability-service.url:http://vulnerability-service:8084}") String vulnerabilityServiceUrl,
+            @Value("${app.alert-service.url:http://alert-service:8085}") String alertServiceUrl) {
         this.scanRepository = scanRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.restTemplate = restTemplate;
+        this.vulnerabilityServiceUrl = vulnerabilityServiceUrl;
+        this.alertServiceUrl = alertServiceUrl;
     }
 
     public void requestCancellation(UUID scanId) {
@@ -107,6 +119,7 @@ public class ScanEngineService {
             ));
             scanRepository.save(scan);
             log.info("Scan {} completed successfully with {} vulnerabilities found.", scanId, vulnsDiscovered);
+            notifyDownstreamServices();
 
         } catch (Exception e) {
             log.error("Error during scan execution: {}", e.getMessage(), e);
@@ -180,6 +193,27 @@ public class ScanEngineService {
             }
         }
         return count;
+    }
+
+    private void notifyDownstreamServices() {
+        try {
+            restTemplate.postForEntity(
+                    vulnerabilityServiceUrl + "/api/vulnerabilities/search/reindex",
+                    null,
+                    Map.class);
+            log.info("Elasticsearch reindex triggered after scan completion");
+        } catch (Exception e) {
+            log.warn("Could not trigger vulnerability reindex: {}", e.getMessage());
+        }
+        try {
+            restTemplate.postForEntity(
+                    alertServiceUrl + "/api/alerts/sync",
+                    null,
+                    Map.class);
+            log.info("Alert sync triggered after scan completion");
+        } catch (Exception e) {
+            log.warn("Could not trigger alert sync: {}", e.getMessage());
+        }
     }
 
     private static class VulnerabilityTemplate {

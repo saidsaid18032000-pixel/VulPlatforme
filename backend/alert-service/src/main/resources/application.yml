@@ -30,3 +30,7 @@ springdoc:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+alerts:
+  sync-interval-ms: ${ALERTS_SYNC_INTERVAL_MS:30000}
+  webhook-url: ${ALERTS_WEBHOOK_URL:}

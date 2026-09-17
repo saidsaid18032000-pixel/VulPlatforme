@@ -99,11 +99,17 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
       POSTGRES_USER: ${POSTGRES_USER:-vuln}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+      VULNERABILITY_SERVICE_URL: http://vulnerability-service:8084
+      ALERT_SERVICE_URL: http://alert-service:8085
     ports:
       - "${SCAN_SERVICE_PORT:-8083}:8083"
     depends_on:
       postgres:
         condition: service_healthy
+      vulnerability-service:
+        condition: service_started
+      alert-service:
+        condition: service_started
 
   vulnerability-service:
     build:

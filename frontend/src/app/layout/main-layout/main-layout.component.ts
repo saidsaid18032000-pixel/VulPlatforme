@@ -101,10 +101,12 @@ import { AuthService } from '../../core/services/auth.service';
                 </a>
               }
 
-              <a routerLink="/audit" routerLinkActive="active" class="nav-item">
-                <span class="material-icons">history</span>
-                <span>Journal d'audit</span>
-              </a>
+              @if (canViewAudit()) {
+                <a routerLink="/audit" routerLinkActive="active" class="nav-item">
+                  <span class="material-icons">history</span>
+                  <span>Journal d'audit</span>
+                </a>
+              }
 
               <a routerLink="/profile" routerLinkActive="active" class="nav-item">
                 <span class="material-icons">account_circle</span>
@@ -115,8 +117,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 6</span>
-              <p>JWT Gateway & Recherche</p>
+              <span class="sprint-tag">Sprint 7</span>
+              <p>Polish SOC & Intégrations</p>
             </div>
           </div>
         </aside>
@@ -403,6 +405,10 @@ export class MainLayoutComponent {
 
   canManageUsers(): boolean {
     return this.authService.hasAnyRole(['ADMINISTRATEUR', 'RESPONSABLE_SSI']);
+  }
+
+  canViewAudit(): boolean {
+    return this.authService.hasAnyRole(['ADMINISTRATEUR', 'RESPONSABLE_SSI', 'AUDITEUR']);
   }
 
   onLogout(): void {

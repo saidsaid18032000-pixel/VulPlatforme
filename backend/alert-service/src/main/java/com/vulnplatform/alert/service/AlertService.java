@@ -25,10 +25,15 @@ public class AlertService {
 
     private final AlertRepository alertRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final AlertNotificationService notificationService;
 
-    public AlertService(AlertRepository alertRepository, JdbcTemplate jdbcTemplate) {
+    public AlertService(
+            AlertRepository alertRepository,
+            JdbcTemplate jdbcTemplate,
+            AlertNotificationService notificationService) {
         this.alertRepository = alertRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.notificationService = notificationService;
     }
 
     @Transactional(readOnly = true)
@@ -69,6 +74,7 @@ public class AlertService {
 
         Alert saved = alertRepository.save(alert);
         log.info("Alert created: {} [{}] id={}", saved.getTitle(), saved.getSeverity(), saved.getId());
+        notificationService.notifyNewAlert(saved);
         return toResponse(saved);
     }
 
@@ -185,7 +191,8 @@ public class AlertService {
                     .cveId(cveId)
                     .build();
 
-            alertRepository.save(alert);
+            Alert saved = alertRepository.save(alert);
+            notificationService.notifyNewAlert(saved);
             created++;
         }
 
