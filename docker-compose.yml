@@ -117,10 +117,17 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-vulnplatform}
       POSTGRES_USER: ${POSTGRES_USER:-vuln}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vuln_secret_change_me}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - "${VULN_SERVICE_PORT:-8084}:8084"
     depends_on:
       postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
         condition: service_healthy
 
   alert-service:
@@ -198,6 +205,7 @@ services:
       ALERT_SERVICE_HOST: alert-service
       REPORT_SERVICE_HOST: report-service
       AI_SERVICE_HOST: ai-service
+      JWT_SECRET: ${JWT_SECRET:-change_me_to_a_long_random_secret_at_least_32_chars}
     ports:
       - "${API_GATEWAY_PORT:-8080}:8080"
     depends_on:

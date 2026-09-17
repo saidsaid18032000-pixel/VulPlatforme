@@ -32,6 +32,6 @@ springdoc:
 
 app:
   jwt:
-    secret: ${JWT_SECRET:change_me_to_a_long_random_secret_at_least_32_chars_very_secure}
+    secret: ${JWT_SECRET:change_me_to_a_long_random_secret_at_least_32_chars}
     expiration-ms: ${JWT_EXPIRATION_MS:900000}
     refresh-expiration-ms: ${JWT_REFRESH_EXPIRATION_MS:604800000}

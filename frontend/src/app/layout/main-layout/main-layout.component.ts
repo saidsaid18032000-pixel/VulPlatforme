@@ -84,6 +84,11 @@ import { AuthService } from '../../core/services/auth.service';
                 <span>Assistant IA</span>
               </a>
 
+              <a routerLink="/search" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">manage_search</span>
+                <span>Recherche SOC</span>
+              </a>
+
               @if (canManageUsers()) {
                 <a routerLink="/users" routerLinkActive="active" class="nav-item">
                   <span class="material-icons">manage_accounts</span>
@@ -110,8 +115,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 5</span>
-              <p>Assistant IA & Priorisation</p>
+              <span class="sprint-tag">Sprint 6</span>
+              <p>JWT Gateway & Recherche</p>
             </div>
           </div>
         </aside>

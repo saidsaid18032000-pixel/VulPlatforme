@@ -19,8 +19,9 @@ Architecture **microservices** orientée domaine sécurité / vulnérabilités.
 ## Données
 
 - **PostgreSQL** : source de vérité relationnelle (users, roles, assets, scans, vulnerabilities)
-- **Redis** : cache / sessions (prévu Sprint suivants)
-- **Elasticsearch** : indexation et recherche (prévu Sprint suivants)
+- **Redis** : cache des recherches SOC (Sprint 6)
+- **Elasticsearch** : indexation / recherche full-text des vulnérabilités (Sprint 6)
+- Auth centralisée JWT au **API Gateway** (Sprint 6) + auth-service (Sprint 1)
 
 ## Principes
 

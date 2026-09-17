@@ -50,6 +50,10 @@ spring:
           predicates:
             - Path=/api/ai/**
 
+app:
+  jwt:
+    secret: ${JWT_SECRET:change_me_to_a_long_random_secret_at_least_32_chars}
+
 management:
   endpoints:
     web:

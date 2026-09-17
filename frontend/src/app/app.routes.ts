@@ -57,6 +57,11 @@ export const routes: Routes = [
           import('./features/ai/ai-assistant.component').then((m) => m.AiAssistantComponent),
       },
       {
+        path: 'search',
+        loadComponent: () =>
+          import('./features/search/search.component').then((m) => m.SearchComponent),
+      },
+      {
         path: 'users',
         loadComponent: () =>
           import('./features/users/users.component').then((m) => m.UsersComponent),
