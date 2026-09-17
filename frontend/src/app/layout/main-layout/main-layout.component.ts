@@ -64,6 +64,16 @@ import { AuthService } from '../../core/services/auth.service';
                 <span>Moteur de Scans</span>
               </a>
 
+              <a routerLink="/vulnerabilities" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">bug_report</span>
+                <span>Vulnérabilités</span>
+              </a>
+
+              <a routerLink="/alerts" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">notifications_active</span>
+                <span>Centre d'Alertes</span>
+              </a>
+
               @if (canManageUsers()) {
                 <a routerLink="/users" routerLinkActive="active" class="nav-item">
                   <span class="material-icons">manage_accounts</span>
@@ -90,8 +100,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 2</span>
-              <p>Actifs & Moteur de Scans actif</p>
+              <span class="sprint-tag">Sprint 3</span>
+              <p>Vulnérabilités & Alertes SOC</p>
             </div>
           </div>
         </aside>

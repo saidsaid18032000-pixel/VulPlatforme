@@ -35,6 +35,18 @@ export const routes: Routes = [
           import('./features/scans/scans.component').then((m) => m.ScansComponent),
       },
       {
+        path: 'vulnerabilities',
+        loadComponent: () =>
+          import('./features/vulnerabilities/vulnerabilities.component').then(
+            (m) => m.VulnerabilitiesComponent
+          ),
+      },
+      {
+        path: 'alerts',
+        loadComponent: () =>
+          import('./features/alerts/alerts.component').then((m) => m.AlertsComponent),
+      },
+      {
         path: 'users',
         loadComponent: () =>
           import('./features/users/users.component').then((m) => m.UsersComponent),

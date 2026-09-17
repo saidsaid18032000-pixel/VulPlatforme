@@ -105,6 +105,24 @@ CREATE INDEX IF NOT EXISTS idx_vulnerabilities_status ON vulnerabilities(status)
 CREATE INDEX IF NOT EXISTS idx_assets_status ON assets(status);
 CREATE INDEX IF NOT EXISTS idx_scans_status ON scans(status);
 
+-- Alertes (Sprint 3)
+CREATE TABLE IF NOT EXISTS alerts (
+    id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title             VARCHAR(500) NOT NULL,
+    message           TEXT,
+    severity          VARCHAR(20) NOT NULL,
+    status            VARCHAR(30) NOT NULL DEFAULT 'NEW',
+    vulnerability_id  UUID REFERENCES vulnerabilities(id) ON DELETE SET NULL,
+    asset_id          UUID REFERENCES assets(id) ON DELETE SET NULL,
+    cve_id            VARCHAR(50),
+    acknowledged_at   TIMESTAMPTZ,
+    resolved_at       TIMESTAMPTZ,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
+CREATE INDEX IF NOT EXISTS idx_alerts_severity ON alerts(severity);
+
 -- Données de démarrage (rôles Sprint 1)
 INSERT INTO roles (name, description) VALUES
     ('ADMINISTRATEUR', 'Administrateur de la plateforme'),
