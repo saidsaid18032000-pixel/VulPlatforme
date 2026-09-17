@@ -79,6 +79,11 @@ import { AuthService } from '../../core/services/auth.service';
                 <span>Rapports & Exports</span>
               </a>
 
+              <a routerLink="/ai" routerLinkActive="active" class="nav-item">
+                <span class="material-icons">psychology</span>
+                <span>Assistant IA</span>
+              </a>
+
               @if (canManageUsers()) {
                 <a routerLink="/users" routerLinkActive="active" class="nav-item">
                   <span class="material-icons">manage_accounts</span>
@@ -105,8 +110,8 @@ import { AuthService } from '../../core/services/auth.service';
 
           <div class="sidebar-footer">
             <div class="sprint-info-card">
-              <span class="sprint-tag">Sprint 4</span>
-              <p>Rapports & Exports SSI</p>
+              <span class="sprint-tag">Sprint 5</span>
+              <p>Assistant IA & Priorisation</p>
             </div>
           </div>
         </aside>
